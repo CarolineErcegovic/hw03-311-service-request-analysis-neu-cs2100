@@ -6,13 +6,33 @@ import pandas as pd
 sys.path.append('.')
 from src.sorting import CaseSorter
 
+def make_test_dataframe() -> pd.DataFrame:
+    """Create a small valid DataFrame for testing."""
+    return pd.DataFrame({
+        "CaseID": [1, 2, 3],
+        "Status": ["Open", "Closed", "Open"],
+        "Category": ["A", "B", "A"],
+        "Street": ["X", "Y", "Z"],
+        "Supervisor District": [1, 1, 2],
+        "Neighborhood": ["N1", "N1", "N2"],
+        "Police District": ["P1", "P1", "P2"],
+        "Latitude": [1.0, 2.0, 3.0],
+        "Longitude": [4.0, 5.0, 6.0],
+        "Point": ["", "", ""],
+        "point_geom": ["", "", ""],
+        "OpenedDate": ["", "", ""],
+        "ClosedDate": ["", "", ""],
+        "days_open": [5, 10, 3],
+        "selected": [False, False, False]
+    })
+
 class TestCaseSorter(unittest.TestCase):
     """Tests for the CaseSorter class."""
     
     def setUp(self) -> None:
         """Load the Boston dataset and initialize CaseSorter."""
-        df = pd.read_csv("data/311_Cases_Boston.csv")
-        self.sorter = CaseSorter(df)
+        self.df = make_test_dataframe()
+        self.sorter = CaseSorter(self.df)
 
     def test_sort_by_days_open_descending(self) -> None:
         """Test that sort_by_days_open sorts from longest to shortest by default."""
@@ -41,13 +61,10 @@ class TestCaseSorter(unittest.TestCase):
 
     def test_sort_by_urgency(self) -> None:
         """Test that sort_by_urgency sorts by urgency score descending."""
-        ranking = self.sorter.create_urgency_ranking()
+        ranking = {"A": 200, "B": 100}
         result = self.sorter.sort_by_urgency(ranking)
 
-        first_score = result.iloc[0]["urgency_score"]
-        second_score = result.iloc[1]["urgency_score"]
-
-        self.assertGreaterEqual(first_score, second_score)
+        self.assertEqual(result.iloc[0]["Category"], "A")
 
     def test_sort_by_urgency_empty_ranking(self) -> None:
         """Test that sort_by_urgency raises ValueError when ranking is empty."""
@@ -56,11 +73,10 @@ class TestCaseSorter(unittest.TestCase):
 
     def test_constructor_missing_column(self) -> None:
         """Test that constructor raises KeyError if required column missing."""
-        df = pd.read_csv("data/311_Cases_Boston.csv")
-        df = df.drop(columns=["CaseID"])
+        df_bad = make_test_dataframe().drop(columns=["CaseID"])
 
         with self.assertRaises(KeyError):
-            CaseSorter(df)
+            CaseSorter(df_bad)
     
     def test_sort_by_urgency_no_overlap(self) -> None:
         """Test that sort_by_urgency raises ValueError if no categories overlap."""
@@ -68,4 +84,3 @@ class TestCaseSorter(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             self.sorter.sort_by_urgency(ranking)
-
