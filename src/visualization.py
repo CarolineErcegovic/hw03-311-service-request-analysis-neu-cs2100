@@ -34,7 +34,8 @@ class Visualizer:
         self.df = df
 
 
-    def plot_percentage_above_average_per_neighborhood(self,neighborhood_column: str = "Neighborhood",
+    def plot_percentage_above_average_per_neighborhood(self,
+        neighborhood_column: str = "Neighborhood",
         days_open_column: str = "days_open") -> None:
         """
         Display a bar graph that shows, for each neighborhood, the percentage of cases that stay 
