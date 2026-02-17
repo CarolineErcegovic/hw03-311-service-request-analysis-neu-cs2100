@@ -86,10 +86,10 @@ class TestAnalyzer(unittest.TestCase):
     
     def test_average_days_open_nonnumeric(self) -> None:
         """Test average_days_open with nonnumeric days_open."""
-        df = pd.read_csv("data/311_Cases_Boston.csv")
-        df["days_open"] = "not a number"
+        df_bad = make_test_dataframe()
+        df_bad["days_open"] = ["a", "b", "c", "d"]
 
-        analyzer = Analyzer(df)
+        analyzer = Analyzer(df_bad)
 
         with self.assertRaises(Exception):
             analyzer.average_days_open()

@@ -4,6 +4,7 @@ Module responsible for visualizing dataset of 311 cases.
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from src.analysis import Analyzer
 
 REQUIRED_COLUMNS = [
     'CaseID', 'Status', 'Category', 'Street', 'Supervisor District',
@@ -44,23 +45,24 @@ class Visualizer:
         Args:
             neighborhood_column (str): The column name for neighborhoods. Default: "Neighborhood".
         """
-        average = self.df[days_open_column].mean()
+        analyzer = Analyzer(self.df)
 
-        df_copy = self.df.copy()
-        df_copy["above_average"] = df_copy[days_open_column] > average
-
-        percentages = (
-            df_copy
-            .groupby(neighborhood_column)["above_average"]
-            .mean() * 100
+        percentages = analyzer.percentage_above_average_per_neighborhood(
+            neighborhood_column,
+            days_open_column
         )
 
+        neighborhoods = list(percentages.keys())
+        values = list(percentages.values())
+
         plt.figure()
-        percentages.plot(kind="bar")
+        plt.bar(neighborhoods, values)
 
         plt.xlabel("Neighborhood")
         plt.ylabel("Percentage of Cases Above Average Days Open")
-        plt.title("Percentage of 311 Cases Open Longer Than Average per Neighborhood")
+        plt.title(
+            "Percentage of 311 Cases Open Longer Than Average per Neighborhood"
+        )
 
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
