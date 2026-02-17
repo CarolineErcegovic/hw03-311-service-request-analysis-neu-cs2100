@@ -4,7 +4,6 @@ Combines sorting and urgency functions as they work together conceptually.
 """
 
 import pandas as pd
-import numpy as np
 
 
 REQUIRED_COLUMNS = [
@@ -18,7 +17,10 @@ class CaseSorter:
     Class for sorting and ranking 311 cases.
     """
 
-    def __init__(self, df: pd.DataFrame, required_columns: list[str] = REQUIRED_COLUMNS) -> None:
+    def __init__(self, 
+                 df: pd.DataFrame, 
+                 required_columns: list[str] = REQUIRED_COLUMNS
+                 ) -> None:
         """
         Initialize with the 311 cases dataset.
 
@@ -36,7 +38,10 @@ class CaseSorter:
                 raise KeyError("Not all of the required columns are in the data frame.")
 
 
-    def sort_by_days_open(self,  ascending: bool = False, days_open_column: str = "days_open") -> pd.DataFrame:
+    def sort_by_days_open(self,  
+                          ascending: bool = False,
+                            days_open_column: str = "days_open"
+                            ) -> pd.DataFrame:
         """
         Return dataset of 311 cases sorted by how long they were open.
         
@@ -74,7 +79,10 @@ class CaseSorter:
                 }
         
 
-    def sort_by_urgency(self, urgency_ranking: dict[str, int], category_column: str = "Category") -> pd.DataFrame:
+    def sort_by_urgency(self, 
+                        urgency_ranking: dict[str, int],
+                          category_column: str = "Category"
+                          ) -> pd.DataFrame:
         """
         Return a filtered version of the dataset including only the categories 
         that have been ranked, sorted by urgency ranking, descending (so more urgent

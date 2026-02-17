@@ -38,7 +38,8 @@ class TestAnalyzer(unittest.TestCase):
             self.assertGreaterEqual(value, 0)
 
     def test_percentage_above_average_per_neighborhood(self) -> None:
-        """Test that percentage_above_average_per_neighborhood returns percentages between 0 and 100."""
+        """Test that percentage_above_average_per_neighborhood 
+        returns percentages between 0 and 100."""
         result = self.analyzer.percentage_above_average_per_neighborhood()
 
         self.assertIsInstance(result, dict)
